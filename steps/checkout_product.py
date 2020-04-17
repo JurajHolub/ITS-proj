@@ -10,14 +10,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.select import Select
 from webdriver_manager.chrome import ChromeDriverManager
+from steps import browser
 
 use_step_matcher("re")
-
-def before_all(context):
-    context.driver = webdriver.Chrome(ChromeDriverManager().install())
-
-def after_all(context):
-    context.driver.quit()
 
 ###############################################################################
 #    Scenario: Checkout the product from the shopping cart
@@ -25,7 +20,7 @@ def after_all(context):
 
 @given('the "Shopping Cart" contains the "Nikon D300" product')
 def step_impl(context):
-    before_all(context)
+    browser.setup(context)
     context.driver.get("http://mys01.fit.vutbr.cz:8033/")
     context.driver.set_window_size(1299, 741)
     context.driver.find_element(By.LINK_TEXT, "Cameras").click()
@@ -43,7 +38,7 @@ def step_impl(context):
 @then('the "Checkout" page with the six steps appears')
 def step_impl(context):
     assert context.driver.current_url == 'http://mys01.fit.vutbr.cz:8033/index.php?route=checkout/checkout'
-    after_all(context)
+    browser.teardown(context)
 
 
 ###############################################################################
@@ -67,7 +62,7 @@ def step_impl(context):
 def step_impl(context):
     elements = context.driver.find_elements(By.CSS_SELECTOR, "#collapse-payment-address > .panel-body")
     assert len(elements) > 0
-    after_all(context)
+    browser.teardown(context)
 
 ###############################################################################
 #   Scenario: Select billing details for the checkout and disagree with Privaci Policy
@@ -138,7 +133,7 @@ def step_impl(context):
 @then('the warning about the neccesarity of the "Privacy Policy" agreament apperas')
 def step_impl(context):
     pass # todo: the privacy policy dissappears ?!
-    after_all(context)
+    browser.teardown(context)
 
 ###############################################################################
 #   Scenario: Select billing details for the checkout and agree with Privaci Policy
@@ -154,7 +149,7 @@ def step_impl(context):
 def step_impl(context):
     elements = context.driver.find_elements(By.CSS_SELECTOR, "#collapse-shipping-address  > .panel-body")
     assert len(elements) > 0
-    after_all(context)
+    browser.teardown(context)
 
 ###############################################################################
 #   Scenario: Specifie the address where to deliver the order
@@ -251,7 +246,7 @@ def step_impl(context):
 def step_impl(context):
     elements = context.driver.find_elements(By.CSS_SELECTOR, "#collapse-shipping-method  > .panel-body")
     assert len(elements) > 0
-    after_all(context)
+    browser.teardown(context)
 
 ###############################################################################
 #   Scenario: Select method of the delivery
@@ -278,7 +273,7 @@ def step_impl(context):
 def step_impl(context):
     elements = context.driver.find_elements(By.CSS_SELECTOR, "#collapse-payment-method  > .panel-body")
     assert len(elements) > 0
-    after_all(context)
+    browser.teardown(context)
 
 ###############################################################################
 #   Scenario: Select payment method and disagree with terms and conditions
@@ -308,7 +303,7 @@ def step_impl(context):
 def step_impl(context):
     elements = context.driver.find_elements(By.CSS_SELECTOR, ".alert")
     assert len(elements) > 0
-    after_all(context)
+    browser.teardown(context)
 
 ###############################################################################
 #   Scenario: Select payment method and agree with terms and conditions
@@ -332,7 +327,7 @@ def step_impl(context):
 def step_impl(context):
     elements = context.driver.find_elements(By.CSS_SELECTOR, "#collapse-checkout-confirm > .panel-body")
     assert len(elements) > 0
-    after_all(context)
+    browser.teardown(context)
 
 ###############################################################################
 #   Scenario: Confirm the finished order
@@ -354,4 +349,4 @@ def step_impl(context):
 @then("the Shopping cart checkout shows the information about succesful order")
 def step_impl(context):
     assert context.driver.current_url == 'http://mys01.fit.vutbr.cz:8033/index.php?route=checkout/success'
-    after_all(context)
+    browser.teardown(context)
